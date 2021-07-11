@@ -33,6 +33,61 @@ ball.color("white")
 ball.penup() #prevents it from drawing lines by default
 ball.goto(0,0)
 
+#move the ball by 2 px 
+ball.dx = 0.1
+ball.dy = 0.1
+
+#Functions
+
+def paddle_a_up() :
+    y = paddle_a.ycor() #current y coordinate
+    y += 20
+    paddle_a.sety(y)
+
+def paddle_a_down() :
+    y = paddle_a.ycor() #current y coordinate
+    y -= 20
+    paddle_a.sety(y)
+
+def paddle_b_up() :
+    y = paddle_b.ycor() #current y coordinate
+    y += 20
+    paddle_b.sety(y)
+
+def paddle_b_down() :
+    y = paddle_b.ycor() #current y coordinate
+    y -= 20
+    paddle_b.sety(y)
+
+#keyboard binding
+wn.listen() #listens for keyboard input
+wn.onkeypress(paddle_a_up,"w") #When the user presses w, calls the paddle_a_up()
+wn.onkeypress(paddle_a_down,"s")
+
+wn.onkeypress(paddle_b_up,"Up")
+wn.onkeypress(paddle_b_down,"Down")
+
 #Main game loop
 while True : 
     wn.update() #updates the screen every time the loop runs 
+
+    #Move the ball
+    ball.setx(ball.xcor() + ball.dx)
+    ball.sety(ball.ycor() + ball.dy)
+
+    #Border Checking 
+    if ball.ycor() > 290 :
+        ball.sety(290)
+        ball.dy *= -1 #reverses the direction of the ball
+    
+    if ball.ycor() < -290 :
+        ball.sety(-290)
+        ball.dy *= -1
+    
+    if ball.xcor() > 390 : 
+        ball.goto(0,0)
+        ball.dx *= -1
+    
+    if ball.xcor() < -390 :
+        ball.goto(0,0)
+        ball.dx *= -1
