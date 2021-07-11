@@ -1,4 +1,5 @@
 import turtle
+import winsound
 
 #create a window for the game 
 wn = turtle.Screen()
@@ -7,6 +8,10 @@ wn.bgcolor("black")
 wn.setup(width=800,height=600)
 #In the game, (0,0) is in the center; x-coordinates go from -400 to 400; y-coordinates from -300 to 300
 wn.tracer(0) #stops the window from updating; has to be done manually 
+
+#Scores 
+score_a = 0
+score_b = 0
 
 #Paddle A : Left Paddle
 paddle_a = turtle.Turtle() #create a turtle object
@@ -37,6 +42,23 @@ ball.goto(0,0)
 ball.dx = 0.1
 ball.dy = -0.1
 
+#Pen 
+pen = turtle.Turtle()
+pen.speed(0)
+pen.color("white")
+pen.penup()
+pen.hideturtle() #We want to view just the text, not the turtle object
+pen.goto(0,260)
+pen.write("Player A: 0  Player B: 0", align="center", font=("Courier",24,"normal"))
+
+#Final score
+score = turtle.Turtle()
+score.speed(0)
+score.color("white")
+score.penup()
+score.hideturtle()
+score.goto(-20,0)
+
 #Functions
 
 def paddle_a_up() :
@@ -59,6 +81,23 @@ def paddle_b_down() :
     y -= 20
     paddle_b.sety(y)
 
+def quit() :
+    paddle_a.reset()
+    paddle_b.reset()
+    ball.reset()
+    if score_a > score_b :
+        score.write("Player A Wins!",align="center", font=("Courier",30,"normal"))
+        winsound.PlaySound("win.wav",winsound.SND_ASYNC)
+    elif score_b > score_a :
+        score.write("Player B Wins!",align="center", font=("Courier",30,"normal"))
+        winsound.PlaySound("win.wav",winsound.SND_ASYNC)
+    else :
+        score.write("It's a Draw!", align="center", font=("Courier",30,"normal"))
+        winsound.PlaySound("tie.wav",winsound.SND_ASYNC)
+
+    global running
+    running = False
+
 #keyboard binding
 wn.listen() #listens for keyboard input
 wn.onkeypress(paddle_a_up,"w") #When the user presses w, calls the paddle_a_up()
@@ -67,8 +106,11 @@ wn.onkeypress(paddle_a_down,"s")
 wn.onkeypress(paddle_b_up,"Up")
 wn.onkeypress(paddle_b_down,"Down")
 
+wn.onkeypress(quit,"q")
+
+running = True
 #Main game loop
-while True : 
+while running : 
     wn.update() #updates the screen every time the loop runs 
 
     #Move the ball
@@ -79,25 +121,38 @@ while True :
     if ball.ycor() > 290 :
         ball.sety(290)
         ball.dy *= -1 #reverses the direction of the ball
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC)
     
     if ball.ycor() < -290 :
         ball.sety(-290)
         ball.dy *= -1
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC)
     
     if ball.xcor() > 390 : 
         ball.goto(0,0)
         ball.dx *= -1
+        score_a += 1
+        pen.clear()
+        pen.write("Player A: {}  Player B: {}".format(score_a,score_b), align="center", font=("Courier",24,"normal"))
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC)
     
     if ball.xcor() < -390 :
         ball.goto(0,0)
         ball.dx *= -1
+        score_b += 1
+        pen.clear()
+        pen.write("Player A: {}  Player B: {}".format(score_a,score_b), align="center", font=("Courier",24,"normal"))
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC)
 
     #Collisions with paddles
     if (ball.xcor() > 340 and ball.xcor() < 350) and (ball.ycor() < paddle_b.ycor() + 40 and ball.ycor() > paddle_b.ycor() - 40):
         ball.setx(340)
         ball.dx *= -1
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC)
     
     if (ball.xcor() < -340 and ball.xcor() > -350) and (ball.ycor() < paddle_a.ycor() + 40 and ball.ycor() > paddle_a.ycor() - 40) :
         ball.setx(-340)
-        ball.dx *= -1 
+        ball.dx *= -1
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC) 
+wn.mainloop()
         
