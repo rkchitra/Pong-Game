@@ -33,14 +33,14 @@ paddle_b.goto(350,0)
 #Ball
 ball = turtle.Turtle() #create a turtle object
 ball.speed(0) #speed of animation; this is set to max possible speed 
-ball.shape("square") #there's several such shapes available
+ball.shape("circle") #there's several such shapes available
 ball.color("white")
 ball.penup() #prevents it from drawing lines by default
 ball.goto(0,0)
 
 #move the ball by 2 px 
-ball.dx = 0.1
-ball.dy = -0.1
+ball.dx = 0.2
+ball.dy = -0.2
 
 #Pen 
 pen = turtle.Turtle()
